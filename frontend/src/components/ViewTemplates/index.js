@@ -91,23 +91,30 @@ const ViewTemplates = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="max-w-7xl mx-auto p-6 space-y-6 flex-grow">
         {/* Back Navigation */}
-        <Link to="/" className="inline-flex items-center text-gray-600 hover:text-gray-900">
+        <Link to="/" className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Dashboard
+          <span className="font-medium">Back to Dashboard</span>
         </Link>
 
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Templates</h1>
-            <p className="text-gray-500">Manage your report templates</p>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+                <FileText className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight text-gray-900">Templates</h1>
+                <p className="text-gray-600 mt-1">Manage your report templates</p>
+              </div>
+            </div>
+            <Link to="/add-template">
+              <Button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-sm transition-all">
+                <Plus className="h-4 w-4" />
+                New Template
+              </Button>
+            </Link>
           </div>
-          <Link to="/add-template">
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Template
-            </Button>
-          </Link>
         </div>
 
         {/* Templates Grid */}

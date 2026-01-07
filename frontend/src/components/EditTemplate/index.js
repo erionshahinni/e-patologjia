@@ -111,18 +111,20 @@ const EditTemplate = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-5xl mx-auto px-4">
-        <Link to="/templates" className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6">
+        <Link to="/templates" className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Templates
+          <span className="font-medium">Back to Templates</span>
         </Link>
 
-        <div className="mb-8 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
-            <FileText className="h-6 w-6 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Edit Template</h1>
-            <p className="text-sm text-gray-500">Update existing template details</p>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+              <FileText className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">Edit Template</h1>
+              <p className="text-gray-600 mt-1">Update existing template details</p>
+            </div>
           </div>
         </div>
 
@@ -131,9 +133,19 @@ const EditTemplate = () => {
           handleSubmit();
         }} className="space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="basic">Basic Information</TabsTrigger>
-              <TabsTrigger value="details">Template Details</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-white rounded-lg shadow-sm border border-gray-200 p-1">
+              <TabsTrigger 
+                value="basic"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-600 data-[state=active]:text-white rounded-md transition-all"
+              >
+                Basic Information
+              </TabsTrigger>
+              <TabsTrigger 
+                value="details"
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-600 data-[state=active]:text-white rounded-md transition-all"
+              >
+                Template Details
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="basic">
@@ -144,11 +156,11 @@ const EditTemplate = () => {
                 errors={errors}
               />
               
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end mt-6 pt-4 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={() => setActiveTab('details')}
-                  className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 shadow-sm transition-all"
                 >
                   Next: Template Details
                 </button>

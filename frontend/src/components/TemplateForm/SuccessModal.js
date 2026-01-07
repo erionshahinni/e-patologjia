@@ -5,8 +5,15 @@ import { CheckCircle2 } from 'lucide-react';
 import Button from '../ui/button';
 
 const SuccessModal = ({ isOpen, onClose, message }) => {
+  const handleOpenChange = (open) => {
+    // Only call onClose when dialog is being closed AND it was previously open
+    if (!open && isOpen) {
+      onClose();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center justify-center gap-2 text-green-600">

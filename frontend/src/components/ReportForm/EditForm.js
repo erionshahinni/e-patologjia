@@ -1,5 +1,5 @@
 // components/ReportForm/EditForm.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createReport, updateReport, createTemplate } from '../../services/api';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
 import BasicInfoForm from './BasicInfoForm';
@@ -257,31 +257,33 @@ useEffect(() => {
     }
   }, [formData.reportType, templates]);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'number' ? (value ? parseFloat(value) : '') : value
     }));
-  };
+  }, []);
 
-  const handlePapTest2Change = (section, value) => {
+  const handlePapTest2Change = useCallback((section, value) => {
     console.log(`Updating paptest2Data.${section} with:`, value);
     
-    // Deep clone the current paptest2Data to avoid issues with references
-    const updatedPaptest2Data = JSON.parse(JSON.stringify({
-      ...formData.paptest2Data,
-      [section]: value
-    }));
-    
-    // Log the updated data for debugging
-    console.log('Updated paptest2Data:', updatedPaptest2Data);
-    
-    setFormData(prev => ({
-      ...prev,
-      paptest2Data: updatedPaptest2Data
-    }));
-  };
+    setFormData(prev => {
+      // Deep clone the current paptest2Data to avoid issues with references
+      const updatedPaptest2Data = JSON.parse(JSON.stringify({
+        ...prev.paptest2Data,
+        [section]: value
+      }));
+      
+      // Log the updated data for debugging
+      console.log('Updated paptest2Data:', updatedPaptest2Data);
+      
+      return {
+        ...prev,
+        paptest2Data: updatedPaptest2Data
+      };
+    });
+  }, []);
 
   const handleTemplateChange = (e) => {
     const templateId = e.target.value;

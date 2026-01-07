@@ -1,4 +1,5 @@
 // components/TemplateForm/utils.js
+import { useCallback } from 'react';
 import { createTemplate, updateTemplate } from '../../services/api';
 import { validateTemplateForm, validateEditTemplate } from './validationUtils';
 
@@ -15,7 +16,7 @@ export const useTemplateHandlers = ({
   templateId = null
 }) => {
   
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -26,9 +27,9 @@ export const useTemplateHandlers = ({
     if (setErrors) {
       setErrors(prev => ({...prev, [name]: ''}));
     }
-  };
+  }, [setFormData, setErrors]);
   
-  const handleReportTypeChange = (e) => {
+  const handleReportTypeChange = useCallback((e) => {
     const { name, value } = e.target;
     
     // When report type changes, reset all the content fields
@@ -47,7 +48,7 @@ export const useTemplateHandlers = ({
     if (setErrors) {
       setErrors({});
     }
-  };
+  }, [setFormData, setErrors]);
   
   const handleSubmit = async (e) => {
     if (e) {

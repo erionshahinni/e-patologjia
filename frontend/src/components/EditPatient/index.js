@@ -1,5 +1,5 @@
 // components/EditPatient/index.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { 
   getPatientById, 
   updatePatient, 
@@ -75,13 +75,13 @@ const EditPatient = () => {
     }
   }, [id]);
 
-  const handlePatientChange = (e) => {
+  const handlePatientChange = useCallback((e) => {
     const { name, value } = e.target;
     setPatientData(prev => ({
       ...prev,
       [name]: value
     }));
-  };
+  }, []);
 
   const handlePatientSubmit = async (e) => {
     e.preventDefault();
@@ -150,14 +150,14 @@ const EditPatient = () => {
           Back to Dashboard
         </Link>
 
-        <div className="flex items-center justify-between">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
-              <UserCircle className="h-8 w-8 text-blue-600" />
+            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <UserCircle className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Edito Pacientin</h1>
-              <p className="text-gray-500">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">Edito Pacientin</h1>
+              <p className="text-gray-600 mt-1">
                 {patientData ? `${patientData.firstName} ${patientData.lastName}` : 'Loading...'}
               </p>
             </div>
@@ -174,12 +174,21 @@ const EditPatient = () => {
         {/* Reports Section */}
         <div className="mt-10">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Reports</h2>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-purple-50 rounded-lg">
+                <Activity className="h-5 w-5 text-purple-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Reports</h2>
+                <p className="text-sm text-gray-500">Manage patient reports</p>
+              </div>
+            </div>
             <Button
               onClick={() => {
                 setShowReportForm(!showReportForm);
                 setSelectedReport(null);
               }}
+              className={showReportForm ? 'bg-gray-600 hover:bg-gray-700' : ''}
             >
               {showReportForm ? 'Cancel' : 'Add New Report'}
             </Button>

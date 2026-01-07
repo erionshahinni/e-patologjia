@@ -13,6 +13,18 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
+    // Handle rate limiting errors (429)
+    if (error.response?.status === 429) {
+      const retryAfter = error.response.headers['retry-after'] || 15;
+      const message = `Shumë kërkesa! Ju lutem prisni ${retryAfter} sekonda para se të provoni përsëri.`;
+      console.warn('Rate limit exceeded:', {
+        url: error.config?.url,
+        retryAfter,
+        message
+      });
+      return Promise.reject(new Error(message));
+    }
+
     // Don't redirect on PIN verification errors or patient deletion errors
     if (error.response?.status === 401) {
       const isPinRelatedRequest = 
@@ -308,6 +320,35 @@ export const deleteReport = (id, pin) => {
     // Create a new error with the message from the server if available
     throw new Error(errorMessage);
   });
+};
+
+// Send report via email with PDF attachment
+export const sendReportEmail = async (reportId, email, pdfBlob, filename, includeLogos) => {
+  try {
+    // Convert blob to base64
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Remove data:application/pdf;base64, prefix
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(pdfBlob);
+    });
+
+    const response = await api.post(`/reports/${reportId}/send-email`, {
+      email,
+      pdfBase64: base64,
+      filename,
+      includeLogos
+    });
+    
+    return response;
+  } catch (error) {
+    console.error('Send report email API error:', error);
+    throw error;
+  }
 };
 
 // Template endpoints

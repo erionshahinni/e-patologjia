@@ -48,25 +48,41 @@ class BasePdfGenerator {
     this.doc.setFontSize(9); // Reduced from 10 to save space
     
     const contentBoxWidth = isFullWidth ? this.tableWidth : this.contentWidth;
-    const textHeight = this.calculateTextHeight(content, contentBoxWidth, 9);
+    const contentCellWidth = isFullWidth ? this.tableWidth - this.labelWidth : this.contentWidth;
+    
+    // Split content into lines
+    let splitContent = [];
+    let textHeight = 0;
+    if (content) {
+      splitContent = this.doc.splitTextToSize(content || '', contentCellWidth - 4);
+      textHeight = splitContent.length * this.lineHeight;
+    }
+    
     const rowHeight = Math.max(6, textHeight + 3); // Reduced minimum height
     
     this.checkAndAddPage(rowHeight);
     
     const currentX = this.margin + (isFullWidth ? 0 : this.labelWidth);
     
+    // Draw label cell
     this.doc.setFont('Arial', 'bold');
     this.doc.rect(this.margin, this.yPosition, this.labelWidth, rowHeight);
-    this.doc.text(label, this.margin + 2, this.yPosition + 4);
+    // Center label vertically if content is multi-line
+    const labelY = splitContent.length > 1 ? this.yPosition + rowHeight / 2 : this.yPosition + 4;
+    this.doc.text(label, this.margin + 2, labelY);
     
+    // Draw content cell
     const contentX = this.margin + this.labelWidth;
-    const contentCellWidth = isFullWidth ? this.tableWidth - this.labelWidth : this.contentWidth;
     this.doc.rect(contentX, this.yPosition, contentCellWidth, rowHeight);
     
-    if (content) {
+    // Render content with proper line spacing
+    if (content && splitContent.length > 0) {
       this.doc.setFont('Arial', 'normal');
-      const splitContent = this.doc.splitTextToSize(content, contentCellWidth - 4);
-      this.doc.text(splitContent, contentX + 2, this.yPosition + 4);
+      // Render each line with proper spacing
+      splitContent.forEach((line, index) => {
+        const lineY = this.yPosition + 4 + (index * this.lineHeight);
+        this.doc.text(line, contentX + 2, lineY);
+      });
     }
     
     this.yPosition += rowHeight;

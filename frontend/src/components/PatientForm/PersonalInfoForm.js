@@ -1,103 +1,113 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui/card';
+import { User, Calendar, MapPin, UserCircle } from 'lucide-react';
+
+// FormField component moved outside to prevent re-creation on each render
+const FormField = memo(({ icon: Icon, label, name, type = 'text', value, onChange, error, options = null, className = '' }) => (
+  <div className={`space-y-2 ${className}`}>
+    <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+      <Icon className="h-4 w-4 text-indigo-600" />
+      <span>{label}</span>
+      {error && (
+        <span className="text-red-500 text-xs font-normal ml-2">{error}</span>
+      )}
+    </label>
+    {type === 'select' ? (
+      <select
+        name={name}
+        value={value || ''}
+        onChange={onChange}
+        className={`mt-1 block w-full rounded-lg border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 bg-white transition-colors ${
+          error ? 'border-red-500' : 'border-gray-300'
+        }`}
+      >
+        {options}
+      </select>
+    ) : (
+      <input
+        type={type}
+        name={name}
+        value={value || ''}
+        onChange={onChange}
+        className={`mt-1 block w-full rounded-lg border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 transition-colors ${
+          error ? 'border-red-500' : 'border-gray-300'
+        }`}
+      />
+    )}
+  </div>
+));
 
 const PersonalInfoForm = ({ formData, handleChange, errors }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Informatat Personale</CardTitle>
-        <CardDescription>Enter patient's personal details</CardDescription>
+    <Card className="shadow-sm border border-gray-200">
+      <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-blue-100 rounded-lg">
+            <UserCircle className="h-5 w-5 text-blue-600" />
+          </div>
+          <div>
+            <CardTitle className="text-xl font-bold text-gray-900">Informatat Personale</CardTitle>
+            <CardDescription className="mt-1">Enter patient's personal details</CardDescription>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Emri
-              {errors.firstName && (
-                <span className="text-red-500 text-xs ml-2">{errors.firstName}</span>
-              )}
-            </label>
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                ${errors.firstName ? 'border-red-500' : 'border-gray-300'}`}
-            />
-          </div>
+          <FormField
+            icon={User}
+            label="Emri"
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            error={errors.firstName}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Mbiemri
-              {errors.lastName && (
-                <span className="text-red-500 text-xs ml-2">{errors.lastName}</span>
-              )}
-            </label>
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                ${errors.lastName ? 'border-red-500' : 'border-gray-300'}`}
-            />
-          </div>
+          <FormField
+            icon={User}
+            label="Mbiemri"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            error={errors.lastName}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Datelindja
-              {errors.dateOfBirth && (
-                <span className="text-red-500 text-xs ml-2">{errors.dateOfBirth}</span>
-              )}
-            </label>
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                ${errors.dateOfBirth ? 'border-red-500' : 'border-gray-300'}`}
-            />
-          </div>
+          <FormField
+            icon={Calendar}
+            label="Datelindja"
+            name="dateOfBirth"
+            type="date"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            error={errors.dateOfBirth}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Gjinia
-              {errors.gender && (
-                <span className="text-red-500 text-xs ml-2">{errors.gender}</span>
-              )}
-            </label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                ${errors.gender ? 'border-red-500' : 'border-gray-300'}`}
-            >
-              <option value="">Zgjedh gjinine</option>
-              <option value="male">Mashkull</option>
-              <option value="female">Femer</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+          <FormField
+            icon={UserCircle}
+            label="Gjinia"
+            name="gender"
+            type="select"
+            value={formData.gender}
+            onChange={handleChange}
+            error={errors.gender}
+            options={
+              <>
+                <option value="">Zgjedh gjinine</option>
+                <option value="male">Mashkull</option>
+                <option value="female">Femer</option>
+                <option value="other">Other</option>
+              </>
+            }
+          />
 
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Adresa
-              {errors.address && (
-                <span className="text-red-500 text-xs ml-2">{errors.address}</span>
-              )}
-            </label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 
-                ${errors.address ? 'border-red-500' : 'border-gray-300'}`}
-            />
-          </div>
+          <FormField
+            icon={MapPin}
+            label="Adresa"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            error={errors.address}
+            className="md:col-span-2"
+          />
         </div>
       </CardContent>
     </Card>

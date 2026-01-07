@@ -1,5 +1,5 @@
 // components/ReportForm/index.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getPatientById, getTemplates } from '../../services/api';
 import { ArrowLeft, Activity, UserCircle, AlertCircle } from 'lucide-react';
@@ -145,16 +145,16 @@ const ReportForm = () => {
     }
   }, [formData.reportType, allTemplates]);
 
-  // Handle form field changes
-  const handleChange = (e) => {
+  // Handle form field changes - useCallback to prevent re-creation
+  const handleChange = useCallback((e) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'number' ? (value ? parseFloat(value) : '') : value
     }));
-  };
+  }, []);
 
-  const handlePapTest2Change = (section, value) => {
+  const handlePapTest2Change = useCallback((section, value) => {
     setFormData(prev => ({
       ...prev,
       paptest2Data: {
@@ -162,7 +162,7 @@ const ReportForm = () => {
         [section]: value
       }
     }));
-  };
+  }, []);
 
   // Handle template selection
   const handleTemplateChange = (e) => {
@@ -250,21 +250,21 @@ const ReportForm = () => {
       <div className="max-w-7xl mx-auto p-6 space-y-6 flex-grow">
         <Link
           to={`/view-patient/${id}`}
-          className="inline-flex items-center text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Patient
+          <span className="font-medium">Back to Patient</span>
         </Link>
 
-        <div className="flex items-center justify-between">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
-              <UserCircle className="h-8 w-8 text-blue-600" />
+            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+              <Activity className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Create Report</h1>
-              <p className="text-gray-500">
-                for {patient.firstName} {patient.lastName}
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">Krijo Raportin </h1>
+              <p className="text-gray-600 mt-1">
+                per {patient.firstName} {patient.lastName}
               </p>
             </div>
           </div>
@@ -275,9 +275,9 @@ const ReportForm = () => {
           <div className="md:col-span-2">
             <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="basic">Basic Information</TabsTrigger>
-                  <TabsTrigger value="examination">Examination Details</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-lg">
+                  <TabsTrigger value="basic" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Basic Information</TabsTrigger>
+                  <TabsTrigger value="examination" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">Examination Details</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="basic">

@@ -317,20 +317,20 @@ const StatisticsDashboard = () => {
       <div className="max-w-7xl mx-auto p-6 space-y-6 flex-grow">
         <Link
           to="/"
-          className="inline-flex items-center text-gray-600 hover:text-gray-900"
+          className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Dashboard
+          <span className="font-medium">Back to Dashboard</span>
         </Link>
 
-        <div className="flex items-center justify-between">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
-              <BarChart3 className="h-8 w-8 text-blue-600" />
+            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <BarChart3 className="h-8 w-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Financial Statistics</h1>
-              <p className="text-gray-500">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">Financial Statistics</h1>
+              <p className="text-gray-600 mt-1">
                 Monitor payments and financial metrics
               </p>
             </div>
@@ -339,83 +339,87 @@ const StatisticsDashboard = () => {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card>
+          <Card className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Total Reports</p>
-                  <h3 className="text-2xl font-bold">{totalStats.total}</h3>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-600 mb-1">Total Reports</p>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-3">{totalStats.total}</h3>
+                  <div className="flex items-center text-sm pt-2 border-t border-gray-100">
+                    <DollarSign className="h-4 w-4 text-gray-400 mr-1" />
+                    <span className="text-gray-500">Total Value:</span>
+                    <span className="ml-2 font-semibold text-gray-900">{formatCurrency(totalStats.totalAmount)}</span>
+                  </div>
                 </div>
-                <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
-                  <UserCircle className="h-6 w-6" />
+                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg ml-4">
+                  <UserCircle className="h-7 w-7 text-white" />
                 </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <span className="text-gray-500">Total Value:</span>
-                <span className="ml-2 font-semibold">{formatCurrency(totalStats.totalAmount)}</span>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Paid Reports</p>
-                  <h3 className="text-2xl font-bold">{totalStats.paid}</h3>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-600 mb-1">Paid Reports</p>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-3">{totalStats.paid}</h3>
+                  <div className="flex items-center text-sm pt-2 border-t border-gray-100">
+                    <DollarSign className="h-4 w-4 text-green-500 mr-1" />
+                    <span className="text-gray-500">Collected:</span>
+                    <span className="ml-2 font-semibold text-green-600">{formatCurrency(totalStats.paidAmount)}</span>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-500">
+                    {totalStats.total > 0 ? ((totalStats.paid / totalStats.total) * 100).toFixed(1) : 0}% of total reports
+                  </div>
                 </div>
-                <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                  <CheckCircle2 className="h-6 w-6" />
+                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg ml-4">
+                  <CheckCircle2 className="h-7 w-7 text-white" />
                 </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <span className="text-gray-500">Collected:</span>
-                <span className="ml-2 font-semibold text-green-600">{formatCurrency(totalStats.paidAmount)}</span>
-              </div>
-              <div className="mt-1 text-sm text-gray-500">
-                {totalStats.total > 0 ? ((totalStats.paid / totalStats.total) * 100).toFixed(1) : 0}% of total reports
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Pending Reports</p>
-                  <h3 className="text-2xl font-bold">{totalStats.pending}</h3>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-600 mb-1">Pending Reports</p>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-3">{totalStats.pending}</h3>
+                  <div className="flex items-center text-sm pt-2 border-t border-gray-100">
+                    <DollarSign className="h-4 w-4 text-orange-500 mr-1" />
+                    <span className="text-gray-500">Pending Amount:</span>
+                    <span className="ml-2 font-semibold text-orange-600">{formatCurrency(totalStats.pendingAmount)}</span>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-500">
+                    {totalStats.total > 0 ? ((totalStats.pending / totalStats.total) * 100).toFixed(1) : 0}% of total reports
+                  </div>
                 </div>
-                <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
-                  <Clock className="h-6 w-6" />
+                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-lg ml-4">
+                  <Clock className="h-7 w-7 text-white" />
                 </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <span className="text-gray-500">Pending Amount:</span>
-                <span className="ml-2 font-semibold text-orange-600">{formatCurrency(totalStats.pendingAmount)}</span>
-              </div>
-              <div className="mt-1 text-sm text-gray-500">
-                {totalStats.total > 0 ? ((totalStats.pending / totalStats.total) * 100).toFixed(1) : 0}% of total reports
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Unpaid Reports</p>
-                  <h3 className="text-2xl font-bold">{totalStats.unpaid}</h3>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-600 mb-1">Unpaid Reports</p>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-3">{totalStats.unpaid}</h3>
+                  <div className="flex items-center text-sm pt-2 border-t border-gray-100">
+                    <DollarSign className="h-4 w-4 text-red-500 mr-1" />
+                    <span className="text-gray-500">Unpaid Amount:</span>
+                    <span className="ml-2 font-semibold text-red-600">{formatCurrency(totalStats.unpaidAmount)}</span>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-500">
+                    {totalStats.total > 0 ? ((totalStats.unpaid / totalStats.total) * 100).toFixed(1) : 0}% of total reports
+                  </div>
                 </div>
-                <div className="h-12 w-12 bg-red-100 rounded-full flex items-center justify-center text-red-600">
-                  <XCircle className="h-6 w-6" />
+                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg ml-4">
+                  <XCircle className="h-7 w-7 text-white" />
                 </div>
-              </div>
-              <div className="mt-4 flex items-center text-sm">
-                <span className="text-gray-500">Unpaid Amount:</span>
-                <span className="ml-2 font-semibold text-red-600">{formatCurrency(totalStats.unpaidAmount)}</span>
-              </div>
-              <div className="mt-1 text-sm text-gray-500">
-                {totalStats.total > 0 ? ((totalStats.unpaid / totalStats.total) * 100).toFixed(1) : 0}% of total reports
               </div>
             </CardContent>
           </Card>
@@ -461,37 +465,37 @@ const StatisticsDashboard = () => {
               
               {/* Daily Statistics */}
               <TabsContent value="daily">
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-lg border border-gray-200">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                       <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pending</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unpaid</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid Amount</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unpaid Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Date</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Paid</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Pending</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Unpaid</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Paid Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Unpaid Amount</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {timeStats.daily.length > 0 ? (
                         timeStats.daily.map((day, index) => (
-                          <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatDate(day.date)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{day.total}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{day.paid}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-orange-600">{day.pending}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">{day.unpaid}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(day.totalAmount)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{formatCurrency(day.paidAmount)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">{formatCurrency(day.unpaidAmount)}</td>
+                          <tr key={index} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{formatDate(day.date)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{day.total}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{day.paid}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-600">{day.pending}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">{day.unpaid}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{formatCurrency(day.totalAmount)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{formatCurrency(day.paidAmount)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">{formatCurrency(day.unpaidAmount)}</td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">No daily data available</td>
+                          <td colSpan="8" className="px-6 py-8 text-center text-sm text-gray-500">No daily data available</td>
                         </tr>
                       )}
                     </tbody>
@@ -501,37 +505,37 @@ const StatisticsDashboard = () => {
               
               {/* Monthly Statistics */}
               <TabsContent value="monthly">
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-lg border border-gray-200">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                       <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pending</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unpaid</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid Amount</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unpaid Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Month</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Paid</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Pending</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Unpaid</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Paid Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Unpaid Amount</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {timeStats.monthly.length > 0 ? (
                         timeStats.monthly.map((month, index) => (
-                          <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatMonth(month.month)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{month.total}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{month.paid}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-orange-600">{month.pending}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">{month.unpaid}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(month.totalAmount)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{formatCurrency(month.paidAmount)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">{formatCurrency(month.unpaidAmount)}</td>
+                          <tr key={index} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{formatMonth(month.month)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{month.total}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{month.paid}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-600">{month.pending}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">{month.unpaid}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{formatCurrency(month.totalAmount)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{formatCurrency(month.paidAmount)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">{formatCurrency(month.unpaidAmount)}</td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">No monthly data available</td>
+                          <td colSpan="8" className="px-6 py-8 text-center text-sm text-gray-500">No monthly data available</td>
                         </tr>
                       )}
                     </tbody>
@@ -541,37 +545,37 @@ const StatisticsDashboard = () => {
               
               {/* Yearly Statistics */}
               <TabsContent value="yearly">
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-lg border border-gray-200">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                       <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pending</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unpaid</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid Amount</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unpaid Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Year</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Paid</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Pending</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Unpaid</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Paid Amount</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Unpaid Amount</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {timeStats.yearly.length > 0 ? (
                         timeStats.yearly.map((year, index) => (
-                          <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{year.year}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{year.total}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{year.paid}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-orange-600">{year.pending}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">{year.unpaid}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(year.totalAmount)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{formatCurrency(year.paidAmount)}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600">{formatCurrency(year.unpaidAmount)}</td>
+                          <tr key={index} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{year.year}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{year.total}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{year.paid}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-600">{year.pending}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">{year.unpaid}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{formatCurrency(year.totalAmount)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">{formatCurrency(year.paidAmount)}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">{formatCurrency(year.unpaidAmount)}</td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">No yearly data available</td>
+                          <td colSpan="8" className="px-6 py-8 text-center text-sm text-gray-500">No yearly data available</td>
                         </tr>
                       )}
                     </tbody>

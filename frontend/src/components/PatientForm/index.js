@@ -1,5 +1,5 @@
 // components/PatientForm/index.js
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { createPatient } from '../../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, CheckCircle2 } from 'lucide-react';
@@ -24,17 +24,20 @@ const PatientForm = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
     // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }));
-    }
-  };
+    setErrors((prev) => {
+      if (prev[name]) {
+        return { ...prev, [name]: '' };
+      }
+      return prev;
+    });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,27 +72,29 @@ const PatientForm = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="max-w-7xl mx-auto p-6 space-y-6 flex-grow">
-        <Link to="/" className="inline-flex items-center text-gray-600 hover:text-gray-900">
+        <Link to="/" className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Dashboard
+          <span className="font-medium">Back to Dashboard</span>
         </Link>
 
-        <div className="flex items-center gap-4">
-          <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
-            <User className="h-8 w-8 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Krijo pacient te ri</h1>
-            <p className="text-gray-500">Shkruaj detajet e pacientit</p>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+              <User className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">Krijo pacient te ri</h1>
+              <p className="text-gray-600 mt-1">Shkruaj detajet e pacientit</p>
+            </div>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <PersonalInfoForm formData={formData} handleChange={handleChange} errors={errors} />
-          <div className="flex justify-end">
+          <div className="flex justify-end pt-4 border-t border-gray-200">
             <Button
               type="submit"
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-sm transition-all"
             >
               <CheckCircle2 className="h-4 w-4" />
               Krijo Pacientin
