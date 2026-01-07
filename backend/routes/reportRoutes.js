@@ -22,21 +22,24 @@ if (reportController) {
 }
 
 // Get all reports
-router.get('/', safeHandler(reportController.getReports));
+router.get('/', auth, safeHandler(reportController.getReports));
 
 // Get reports for a specific patient
-router.get('/patient/:patientId', safeHandler(reportController.getReportsByPatientId));
+router.get('/patient/:patientId', auth, safeHandler(reportController.getReportsByPatientId));
 
 // Get a specific report
-router.get('/:id', safeHandler(reportController.getReportById));
+router.get('/:id', auth, safeHandler(reportController.getReportById));
 
 // Create a new report
-router.post('/', safeHandler(reportController.createReport));
+router.post('/', auth, safeHandler(reportController.createReport));
 
 // Update a report
-router.put('/:id', safeHandler(reportController.updateReport));
+router.put('/:id', auth, safeHandler(reportController.updateReport));
 
 // Delete a report
 router.delete('/:id', auth, safeHandler(reportController.deleteReport));
+
+// Send report via email with PDF attachment
+router.post('/:id/send-email', auth, safeHandler(reportController.sendReportEmail));
 
 module.exports = router;

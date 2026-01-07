@@ -7,10 +7,11 @@ const { auth } = require('../middleware/auth'); // Add authentication middleware
 
 
 // Define routes with their corresponding controller functions
-router.post('/', patientController.createPatient);
-router.get('/', patientController.getPatients);
-router.get('/:id', patientController.getPatientById);
-router.put('/:id', patientController.updatePatient);
-router.delete('/:id', auth, patientController.deletePatient); // Add auth middleware here
+// All routes require authentication
+router.post('/', auth, patientController.createPatient);
+router.get('/', auth, patientController.getPatients);
+router.get('/:id', auth, patientController.getPatientById);
+router.put('/:id', auth, patientController.updatePatient);
+router.delete('/:id', auth, patientController.deletePatient);
 
 module.exports = router;

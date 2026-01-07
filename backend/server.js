@@ -31,10 +31,17 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
+// Import security middleware and error handler
+const securityMiddleware = require('./middleware/security');
+const errorHandler = require('./middleware/errorHandler');
+
 // Security Middleware
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
+
+// Apply additional security middleware
+securityMiddleware(app);
 
 // Body Parser Middleware
 app.use(express.json({ limit: '50mb' }));
@@ -75,6 +82,9 @@ app.get('/health', (req, res) => {
     mongoConnection: mongoose.connection.readyState === 1
   });
 });
+
+// Error Handler Middleware (must be last)
+app.use(errorHandler);
 
 // Start server
 const startServer = async () => {

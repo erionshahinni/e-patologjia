@@ -45,6 +45,36 @@ class BaseEmailService {
     }
   }
 
+  async sendEmailWithAttachment(to, subject, htmlTemplate, textTemplate, pdfBuffer, filename) {
+    const mailOptions = {
+      from: `"ePatologjia" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html: htmlTemplate,
+      text: textTemplate,
+      attachments: [
+        {
+          filename: filename || 'report.pdf',
+          content: pdfBuffer,
+          contentType: 'application/pdf'
+        }
+      ]
+    };
+
+    try {
+      console.log(`Attempting to send email with attachment to: ${to} with subject: ${subject}`);
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log(`Email with attachment sent successfully to ${to}. Message ID: ${info.messageId}`);
+      return true;
+    } catch (error) {
+      console.error(`Error sending email with attachment to ${to}:`, error);
+      if (error.response) {
+        console.error('SMTP Response:', error.response);
+      }
+      return false;
+    }
+  }
+
   // Test email configuration
   async testEmailService() {
     try {

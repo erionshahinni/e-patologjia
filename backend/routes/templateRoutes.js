@@ -3,20 +3,22 @@
 const express = require('express');
 const router = express.Router();
 const templateController = require('../controllers/templateController');
+const { auth } = require('../middleware/auth');
 
+// All template routes require authentication
 // Get all templates
-router.get('/', templateController.getTemplates);
+router.get('/', auth, templateController.getTemplates);
 
 // Get template by ID
-router.get('/:id', templateController.getTemplateById);
+router.get('/:id', auth, templateController.getTemplateById);
 
 // Create new template
-router.post('/', templateController.createTemplate);
+router.post('/', auth, templateController.createTemplate);
 
 // Update template
-router.put('/:id', templateController.updateTemplate);
+router.put('/:id', auth, templateController.updateTemplate);
 
 // Delete template
-router.delete('/:id', templateController.deleteTemplate);
+router.delete('/:id', auth, templateController.deleteTemplate);
 
 module.exports = router;
