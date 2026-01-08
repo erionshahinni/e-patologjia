@@ -90,7 +90,6 @@ const PatientInfoForm = ({ patientData, handleChange, handleSubmit }) => {
               type="date"
               value={(patientData.dateOfBirth || '').split('T')[0]}
               onChange={handleChange}
-              required
             />
 
             <FormField
@@ -100,7 +99,6 @@ const PatientInfoForm = ({ patientData, handleChange, handleSubmit }) => {
               type="select"
               value={patientData.gender || ''}
               onChange={handleChange}
-              required
               options={
                 <>
                   <option value="">Zgjedh gjinine</option>
@@ -117,7 +115,6 @@ const PatientInfoForm = ({ patientData, handleChange, handleSubmit }) => {
               name="address"
               value={patientData.address || ''}
               onChange={handleChange}
-              required
             />
           </div>
 

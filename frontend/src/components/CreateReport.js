@@ -66,7 +66,7 @@ const CreateReport = ({ onAddReport }) => {
         templateId: '',
         status: 'Not Created',
       });
-      navigate('/');
+      navigate('/dashboard');
     } catch (error) {
       console.error(error);
     }

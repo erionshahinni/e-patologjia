@@ -43,18 +43,8 @@ const EditReport = () => {
   }, [id]);
 
   const handleSuccess = (message) => {
-    // Important: Make sure we're using report.patientId, not the report object itself
-    console.log('Navigation to patient view with ID:', report.patientId);
-    if (report && report.patientId) {
-      // Ensure we're using a string ID, not an object
-      const patientId = typeof report.patientId === 'object' ? 
-                        (report.patientId._id || report.patientId.id || '') : 
-                        report.patientId;
-      
-      navigate(`/view-patient/${patientId}`);
-    } else {
-      navigate('/');
-    }
+    // Redirect to View Report page after successful update
+    navigate(`/view-report/${id}`);
   };
 
   const handleError = (message) => {
@@ -76,7 +66,7 @@ const EditReport = () => {
           <CardContent className="text-center py-12">
             <AlertCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <p className="text-gray-500">Report not found</p>
-            <Link to="/" className="text-blue-600 hover:text-blue-700 mt-4 inline-block">
+            <Link to="/dashboard" className="text-blue-600 hover:text-blue-700 mt-4 inline-block">
               Return to Dashboard
             </Link>
           </CardContent>

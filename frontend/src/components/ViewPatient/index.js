@@ -110,7 +110,7 @@ const ViewPatient = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="max-w-7xl mx-auto p-6 space-y-6 flex-grow">
         {/* Back Navigation */}
-        <Link to="/" className="inline-flex items-center text-gray-600 hover:text-gray-900">
+        <Link to="/dashboard" className="inline-flex items-center text-gray-600 hover:text-gray-900">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kthehu në Dashboard
         </Link>

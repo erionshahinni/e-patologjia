@@ -5,6 +5,10 @@ import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 
+// Landing Page & Home Redirect
+import LandingPage from './components/LandingPage';
+import HomeRedirect from './components/HomeRedirect';
+
 // Auth Components
 import Login from './components/Login';
 import Register from './components/Register';
@@ -47,6 +51,9 @@ const App = () => {
     <Router>
       <AuthProvider>
         <Routes>
+          {/* Landing Page - Public */}
+          <Route path="/home" element={<LandingPage />} />
+          
           {/* Public Routes - Outside Layout */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -56,11 +63,14 @@ const App = () => {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/reset-pin" element={<PinResetForm />} />
 
+          {/* Root route - Shows landing page or redirects to dashboard */}
+          <Route path="/" element={<HomeRedirect />} />
+          
           {/* Protected Routes - Inside Layout */}
           <Route element={<Layout />}>
             {/* Dashboard */}
             <Route 
-              path="/" 
+              path="/dashboard" 
               element={
                 <PrivateRoute roles={["admin", "doctor"]}>
                   <Dashboard />
@@ -211,8 +221,8 @@ const App = () => {
             />
           </Route>
 
-          {/* Catch all route - Redirect to dashboard */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Catch all route - Redirect to landing page for unauthenticated users */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </AuthProvider>
     </Router>

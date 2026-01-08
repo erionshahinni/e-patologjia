@@ -3,11 +3,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui
 import { User, Calendar, MapPin, UserCircle } from 'lucide-react';
 
 // FormField component moved outside to prevent re-creation on each render
-const FormField = memo(({ icon: Icon, label, name, type = 'text', value, onChange, error, options = null, className = '' }) => (
+const FormField = memo(({ icon: Icon, label, name, type = 'text', value, onChange, error, options = null, className = '', required = false }) => (
   <div className={`space-y-2 ${className}`}>
     <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
       <Icon className="h-4 w-4 text-indigo-600" />
-      <span>{label}</span>
+      <span>{label} {required && <span className="text-red-500">*</span>}</span>
       {error && (
         <span className="text-red-500 text-xs font-normal ml-2">{error}</span>
       )}
@@ -17,6 +17,7 @@ const FormField = memo(({ icon: Icon, label, name, type = 'text', value, onChang
         name={name}
         value={value || ''}
         onChange={onChange}
+        required={required}
         className={`mt-1 block w-full rounded-lg border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 bg-white transition-colors ${
           error ? 'border-red-500' : 'border-gray-300'
         }`}
@@ -29,6 +30,7 @@ const FormField = memo(({ icon: Icon, label, name, type = 'text', value, onChang
         name={name}
         value={value || ''}
         onChange={onChange}
+        required={required}
         className={`mt-1 block w-full rounded-lg border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 transition-colors ${
           error ? 'border-red-500' : 'border-gray-300'
         }`}
@@ -60,6 +62,7 @@ const PersonalInfoForm = ({ formData, handleChange, errors }) => {
             value={formData.firstName}
             onChange={handleChange}
             error={errors.firstName}
+            required
           />
 
           <FormField
@@ -69,6 +72,7 @@ const PersonalInfoForm = ({ formData, handleChange, errors }) => {
             value={formData.lastName}
             onChange={handleChange}
             error={errors.lastName}
+            required
           />
 
           <FormField

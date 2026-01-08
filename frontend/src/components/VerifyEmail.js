@@ -34,7 +34,7 @@ const VerifyEmail = () => {
     
     // If user is already verified, redirect to dashboard
     if (user?.isVerified) {
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     }
   }, [location, user, navigate]);
 
@@ -69,7 +69,7 @@ const VerifyEmail = () => {
       
       // Redirect to dashboard after successful verification
       setTimeout(() => {
-        navigate('/', { replace: true });
+        navigate('/dashboard', { replace: true });
       }, 2000);
     } catch (error) {
       setError(error.message || 'Failed to verify email');

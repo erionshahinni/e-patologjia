@@ -56,7 +56,7 @@ const ViewReport = () => {
           (report.patientId._id || report.patientId.id) : report.patientId;
         navigate(`/view-patient/${patientId}`);
       } else {
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (error) {
       console.error('Error deleting report:', error);
@@ -92,7 +92,7 @@ const ViewReport = () => {
               <h3 className="mt-2 text-lg font-medium text-gray-900">Error Loading Report</h3>
               <p className="mt-1 text-sm text-gray-500">{error}</p>
               <div className="mt-6">
-                <Link to="/" className="text-blue-600 hover:text-blue-500">
+                <Link to="/dashboard" className="text-blue-600 hover:text-blue-500">
                   Return to Dashboard
                 </Link>
               </div>
@@ -112,7 +112,7 @@ const ViewReport = () => {
               <AlertCircle className="mx-auto h-12 w-12 text-yellow-500" />
               <h3 className="mt-2 text-lg font-medium text-gray-900">Report Not Found</h3>
               <div className="mt-6">
-                <Link to="/" className="text-blue-600 hover:text-blue-500">
+                <Link to="/dashboard" className="text-blue-600 hover:text-blue-500">
                   Return to Dashboard
                 </Link>
               </div>

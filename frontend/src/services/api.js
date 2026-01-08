@@ -351,6 +351,35 @@ export const sendReportEmail = async (reportId, email, pdfBlob, filename, includ
   }
 };
 
+// Open Outlook with email and PDF attachment
+export const openOutlookWithAttachment = async (reportId, email, pdfBlob, filename, includeLogos) => {
+  try {
+    // Convert blob to base64
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Remove data:application/pdf;base64, prefix
+        const base64String = reader.result.split(',')[1];
+        resolve(base64String);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(pdfBlob);
+    });
+
+    const response = await api.post(`/reports/${reportId}/open-outlook`, {
+      email,
+      pdfBase64: base64,
+      filename,
+      includeLogos
+    });
+    
+    return response;
+  } catch (error) {
+    console.error('Open Outlook API error:', error);
+    throw error;
+  }
+};
+
 // Template endpoints
 export const getTemplates = () => api.get('/templates');
 export const getTemplateById = (id) => api.get(`/templates/${id}`);

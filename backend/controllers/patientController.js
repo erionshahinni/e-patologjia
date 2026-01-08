@@ -6,8 +6,28 @@ const jwt = require('jsonwebtoken');
 
 exports.createPatient = async (req, res) => {
   try {
-    // Create new patient with available data
-    const patient = new Patient(req.body);
+    // Validate that firstName and lastName are provided and not empty
+    const { firstName, lastName } = req.body;
+
+    if (!firstName || firstName.trim() === '') {
+      return res.status(400).json({ message: 'First name is required' });
+    }
+
+    if (!lastName || lastName.trim() === '') {
+      return res.status(400).json({ message: 'Last name is required' });
+    }
+
+    // Prepare patient data - convert empty strings to null/undefined for optional fields
+    const patientData = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      // Only include optional fields if they have values
+      ...(req.body.dateOfBirth && { dateOfBirth: req.body.dateOfBirth }),
+      ...(req.body.gender && req.body.gender.trim() !== '' && { gender: req.body.gender }),
+      ...(req.body.address && req.body.address.trim() !== '' && { address: req.body.address.trim() })
+    };
+    
+    const patient = new Patient(patientData);
     const savedPatient = await patient.save();
     res.status(201).json(savedPatient);
   } catch (error) {
@@ -76,6 +96,18 @@ exports.updatePatient = async (req, res) => {
       return res.status(404).json({ message: 'Patient not found' });
     }
 
+    // Validate that firstName and lastName are provided and not empty
+    const firstName = req.body.firstName !== undefined ? req.body.firstName : patient.firstName;
+    const lastName = req.body.lastName !== undefined ? req.body.lastName : patient.lastName;
+
+    if (!firstName || firstName.trim() === '') {
+      return res.status(400).json({ message: 'First name is required' });
+    }
+
+    if (!lastName || lastName.trim() === '') {
+      return res.status(400).json({ message: 'Last name is required' });
+    }
+
     // Update only the fields that are provided
     const updateFields = {};
     for (const [key, value] of Object.entries(req.body)) {
@@ -83,6 +115,10 @@ exports.updatePatient = async (req, res) => {
         updateFields[key] = value;
       }
     }
+
+    // Ensure firstName and lastName are always included
+    updateFields.firstName = firstName.trim();
+    updateFields.lastName = lastName.trim();
 
     const updatedPatient = await Patient.findByIdAndUpdate(
       req.params.id,

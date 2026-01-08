@@ -300,7 +300,7 @@ const StatisticsDashboard = () => {
               <h3 className="text-lg font-medium">Error Loading Data</h3>
               <p className="text-gray-500">{error}</p>
               <button 
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/dashboard')}
                 className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Return to Dashboard
@@ -316,7 +316,7 @@ const StatisticsDashboard = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="max-w-7xl mx-auto p-6 space-y-6 flex-grow">
         <Link
-          to="/"
+          to="/dashboard"
           className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />

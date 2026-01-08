@@ -13,8 +13,7 @@ export const useReportHandlers = ({
   allTemplates,
   setAllTemplates,
   filteredTemplates,
-  setFilteredTemplates,
-  setActiveTab
+  setFilteredTemplates
 }) => {
   // Handle saving the current form data as a template
   const handleSaveTemplate = async () => {
@@ -89,7 +88,7 @@ const handleSubmit = async (status) => {
           err => examinationErrors.includes(err)
         );
         
-        setActiveTab(hasExaminationErrors ? 'examination' : 'basic');
+        // Tab switching removed - using collapsible sections instead
         return;
       }
     }

@@ -47,7 +47,7 @@ const PatientTable = ({ filteredPatients, openModal, canDelete = true }) => {
                   </td>
                   
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {new Date(patient.dateOfBirth).toLocaleDateString()}
+                    {patient.dateOfBirth ? new Date(patient.dateOfBirth).toLocaleDateString() : '-'}
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">

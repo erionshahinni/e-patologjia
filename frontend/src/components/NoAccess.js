@@ -14,7 +14,7 @@ const NoAccess = () => {
   };
 
   const handleBackToDashboard = () => {
-    navigate('/');
+    navigate('/dashboard');
   };
 
   return (

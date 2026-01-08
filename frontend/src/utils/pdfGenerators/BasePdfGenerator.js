@@ -309,7 +309,7 @@ class BasePdfGenerator {
 
     this.addSplitRow(
       'Datelindja',
-      new Date(patientId.dateOfBirth).toLocaleDateString(),
+      patientId.dateOfBirth ? new Date(patientId.dateOfBirth).toLocaleDateString() : '',
       'Perfunduar me',
       finishedAt ? new Date(finishedAt).toLocaleDateString() : ''
     );

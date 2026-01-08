@@ -1,6 +1,7 @@
 // components/PDFReportGenerator.js
 import React, { useEffect, useRef, useState } from 'react';
 import PDFGeneratorFactory from '../utils/pdfGenerators/PDFGeneratorFactory';
+import EmailFormModal from './EmailFormModal';
 
 // Utility function for generating and downloading PDF
 export const generateAndDownloadPDF = async (report, includeLogoSignature = true) => {
@@ -25,6 +26,7 @@ export const generateAndDownloadPDF = async (report, includeLogoSignature = true
 const PDFReportGenerator = ({ report, previewMode = false, previewType = 'electronic', onPreviewReady, onClose }) => {
   const pdfCanvasRef = useRef(null);
   const [pdfBlob, setPdfBlob] = useState(null);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   useEffect(() => {
     if (previewMode && pdfCanvasRef.current) {
@@ -132,52 +134,45 @@ const PDFReportGenerator = ({ report, previewMode = false, previewType = 'electr
       alert('PDF is not ready to be sent.');
       return;
     }
-
-    // Create a temporary anchor element to download the PDF
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.download = `${report.patientId.lastName}-${report.reportType}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(pdfUrl);
-
-    // Open the default email client with the PDF attached
-    const subject = `Report for ${report.patientId.firstName} ${report.patientId.lastName}`;
-    const body = 'Please find the attached report.';
-    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&attachment=${encodeURIComponent(pdfUrl)}`;
-
-    window.location.href = mailtoLink;
+    setIsEmailModalOpen(true);
   };
 
   if (previewMode) {
     return (
-      <div className="pdf-preview-container w-full" style={{ minHeight: '800px' }}>
-        <div ref={pdfCanvasRef} style={{ minHeight: '800px' }}>
-          {/* PDF will be rendered here */}
+      <>
+        <div className="pdf-preview-container w-full" style={{ minHeight: '800px' }}>
+          <div ref={pdfCanvasRef} style={{ minHeight: '800px' }}>
+            {/* PDF will be rendered here */}
+          </div>
+          <div className="flex justify-end gap-4 mt-4">
+            <button
+              onClick={onClose}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700"
+            >
+              Close
+            </button>
+            <button
+              onClick={() => generateAndDownloadPDF(report, previewType === 'electronic')}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+            >
+              Download
+            </button>
+            <button
+              onClick={handleSendEmail}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
+            >
+              Send to Email
+            </button>
+          </div>
         </div>
-        <div className="flex justify-end gap-4 mt-4">
-          <button
-            onClick={onClose}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700"
-          >
-            Close
-          </button>
-          <button
-            onClick={() => generateAndDownloadPDF(report, previewType === 'electronic')}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-          >
-            Download
-          </button>
-          <button
-            onClick={handleSendEmail}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
-          >
-            Send to Email
-          </button>
-        </div>
-      </div>
+        <EmailFormModal
+          isOpen={isEmailModalOpen}
+          onClose={() => setIsEmailModalOpen(false)}
+          report={report}
+          pdfBlob={pdfBlob}
+          previewType={previewType}
+        />
+      </>
     );
   }
 

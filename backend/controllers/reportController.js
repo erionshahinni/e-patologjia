@@ -279,5 +279,193 @@ reportController.sendReportEmail = async (req, res) => {
   }
 };
 
+// Open Outlook with email and PDF attachment
+reportController.openOutlookWithAttachment = async (req, res) => {
+  try {
+    const { email, pdfBase64, filename, includeLogos } = req.body;
+    const reportId = req.params.id;
+
+    if (!email || !pdfBase64) {
+      return res.status(400).json({ message: 'Email and PDF data are required' });
+    }
+
+    // Get report to include patient info in email
+    const report = await Report.findById(reportId).populate('patientId');
+    if (!report) {
+      return res.status(404).json({ message: 'Report not found' });
+    }
+
+    // Convert base64 to buffer
+    const pdfBuffer = Buffer.from(pdfBase64, 'base64');
+
+    // Create email subject and body
+    const patientName = report.patientId 
+      ? `${report.patientId.firstName} ${report.patientId.lastName}`
+      : 'Patient';
+    const subject = `Report for ${patientName}`;
+    const body = `Dear Recipient,\n\nPlease find attached the medical report for ${patientName}.\n\nReport Type: ${report.reportType || 'N/A'}\n${report.referenceNumber ? `Reference Number: ${report.referenceNumber}\n` : ''}\nBest regards,\nePatologjia System`;
+
+    // Use VBScript to open Outlook with attachment
+    const fs = require('fs');
+    const path = require('path');
+    const { exec } = require('child_process');
+    const os = require('os');
+
+    // Create temp directory in user's temp folder
+    const tempDir = path.join(os.tmpdir(), 'epatologjia-outlook');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    // Save PDF to temp directory
+    const pdfFileName = filename || `${patientName}-${report.reportType || 'Report'}.pdf`;
+    const pdfPath = path.join(tempDir, pdfFileName);
+    fs.writeFileSync(pdfPath, pdfBuffer);
+
+    // Use VBScript to open Outlook with attachment
+    // Write values as VBScript variables using a simple and safe approach
+    
+    // Helper to safely convert string to VBScript string literal
+    // Simply doubles quotes (VBScript standard escaping)
+    const toVBSString = (str) => {
+      if (!str) return '""';
+      // Normalize line endings first
+      let normalized = str.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      // Split by newlines and join with vbCrLf
+      const lines = normalized.split('\n');
+      if (lines.length === 1) {
+        // No newlines, just escape quotes
+        return `"${lines[0].replace(/"/g, '""')}"`;
+      }
+      // Has newlines, build concatenated string
+      const escapedLines = lines.map(line => `"${line.replace(/"/g, '""')}"`);
+      return escapedLines.join(' & vbCrLf & ');
+    };
+    
+    // For file path, use forward slashes (Windows accepts both) and escape quotes
+    const safePath = pdfPath.replace(/\\/g, '/').replace(/"/g, '""');
+    
+    const vbsEmail = toVBSString(email);
+    const vbsSubject = toVBSString(subject);
+    const vbsBody = toVBSString(body);
+    
+    // Create VBScript with safe string handling
+    const vbsScript = `On Error Resume Next
+Dim objOutlook, objMail
+Set objOutlook = CreateObject("Outlook.Application")
+If Err.Number <> 0 Then
+  WScript.Echo "Error: Outlook is not installed. Error: " & Err.Number & " - " & Err.Description
+  WScript.Quit 1
+End If
+
+Set objMail = objOutlook.CreateItem(0)
+objMail.To = ${vbsEmail}
+objMail.Subject = ${vbsSubject}
+objMail.Body = ${vbsBody}
+
+' Add attachment
+On Error Resume Next
+objMail.Attachments.Add "${safePath}"
+If Err.Number <> 0 Then
+  WScript.Echo "Error adding attachment: " & Err.Number & " - " & Err.Description
+  WScript.Quit 1
+End If
+On Error Goto 0
+
+objMail.Display
+
+Set objMail = Nothing
+Set objOutlook = Nothing
+WScript.Quit 0`;
+
+    const vbsPath = path.join(tempDir, 'openOutlook.vbs');
+    // Write VBScript file with UTF-8 encoding
+    fs.writeFileSync(vbsPath, vbsScript, { encoding: 'utf8' });
+
+    console.log('VBScript created at:', vbsPath);
+    console.log('PDF path:', pdfPath);
+    console.log('PDF exists:', fs.existsSync(pdfPath));
+    console.log('PDF file size:', fs.existsSync(pdfPath) ? fs.statSync(pdfPath).size : 'N/A');
+    console.log('VBScript content (first 500 chars):', vbsScript.substring(0, 500));
+
+    // Execute VBScript using wscript (better for GUI apps like Outlook)
+    // wscript runs in the current user's desktop session
+    const vbsCommand = `wscript "${vbsPath}"`;
+    console.log('Executing command:', vbsCommand);
+    
+    // Use spawn instead of exec to run in background without blocking
+    const { spawn } = require('child_process');
+    const wscriptProcess = spawn('wscript', [vbsPath], {
+      windowsHide: false,
+      detached: true,
+      stdio: 'ignore'
+    });
+    
+    // Don't wait for the process - let it run independently
+    wscriptProcess.unref();
+    
+    console.log('VBScript process started, PID:', wscriptProcess.pid);
+    
+    // Clean up VBS file after a delay
+    setTimeout(() => {
+      try {
+        if (fs.existsSync(vbsPath)) {
+          fs.unlinkSync(vbsPath);
+          console.log('VBScript file cleaned up');
+        }
+      } catch (err) {
+        console.error('Error cleaning up VBS file:', err);
+      }
+    }, 5000);
+
+    // Clean up PDF file after 10 minutes (Outlook needs it until email is sent)
+    // This gives user enough time to send the email
+    setTimeout(() => {
+      try {
+        if (fs.existsSync(pdfPath)) {
+          fs.unlinkSync(pdfPath);
+          console.log('PDF file cleaned up:', pdfPath);
+        }
+      } catch (err) {
+        console.error('Error cleaning up PDF file:', err);
+      }
+    }, 10 * 60 * 1000); // 10 minutes
+
+    // Also clean up old files in temp directory (older than 1 hour) to prevent disk space issues
+    try {
+      const files = fs.readdirSync(tempDir);
+      const now = Date.now();
+      files.forEach(file => {
+        const filePath = path.join(tempDir, file);
+        try {
+          const stats = fs.statSync(filePath);
+          const fileAge = now - stats.mtimeMs;
+          // Delete files older than 1 hour
+          if (fileAge > 60 * 60 * 1000) {
+            fs.unlinkSync(filePath);
+            console.log('Old file cleaned up:', filePath);
+          }
+        } catch (err) {
+          // Ignore errors for individual files
+        }
+      });
+    } catch (err) {
+      // Ignore errors if directory doesn't exist or can't be read
+    }
+
+    // Return success immediately (don't wait for VBScript execution)
+    res.json({ 
+      message: 'Outlook is being opened with attachment',
+      success: true
+    });
+  } catch (error) {
+    console.error('Error opening Outlook with attachment:', error);
+    res.status(500).json({ 
+      message: 'Error opening Outlook',
+      error: error.message 
+    });
+  }
+};
+
 // Export the controller
 module.exports = reportController;

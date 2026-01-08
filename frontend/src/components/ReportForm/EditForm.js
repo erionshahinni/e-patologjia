@@ -1,7 +1,7 @@
 // components/ReportForm/EditForm.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { createReport, updateReport, createTemplate } from '../../services/api';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
+import { ChevronDown, ChevronUp, FileText, Stethoscope } from 'lucide-react';
 import BasicInfoForm from './BasicInfoForm';
 import ExaminationDetails from './ExaminationDetails';
 import TemplateSection from './TemplateSection';
@@ -103,7 +103,8 @@ const EditForm = ({
   onSuccess, 
   onError 
 }) => {
-  const [activeTab, setActiveTab] = useState('basic');
+  const [isBasicInfoExpanded, setIsBasicInfoExpanded] = useState(false);
+  const [isExaminationExpanded, setIsExaminationExpanded] = useState(false);
   const [templateName, setTemplateName] = useState('');
   const [filteredTemplates, setFilteredTemplates] = useState([]);
   const [formData, setFormData] = useState({...initialReportState});
@@ -490,25 +491,62 @@ useEffect(() => {
       {/* Main Form Area - 2/3 width */}
       <div className="md:col-span-2">
         <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="basic">Basic Information</TabsTrigger>
-              <TabsTrigger value="examination">Examination Details</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="basic">
-              <BasicInfoForm formData={formData} handleChange={handleChange} />
-            </TabsContent>
+          {/* Basic Information - Collapsible */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setIsBasicInfoExpanded(!isBasicInfoExpanded)}
+              className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-colors"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <FileText className="h-5 w-5 text-blue-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">Basic Information</h2>
+              </div>
+              {isBasicInfoExpanded ? (
+                <ChevronUp className="h-5 w-5 text-gray-600" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-gray-600" />
+              )}
+            </button>
+            {isBasicInfoExpanded && (
+              <div className="p-6">
+                <BasicInfoForm formData={formData} handleChange={handleChange} />
+              </div>
+            )}
+          </div>
 
-            <TabsContent value="examination">
-              <ExaminationDetails
-                formData={formData}
-                handleChange={handleChange}
-                handlePapTest2Change={handlePapTest2Change}
-                handleSubmit={handleSubmit}
-              />
-            </TabsContent>
-          </Tabs>
+          {/* Examination Details - Collapsible */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setIsExaminationExpanded(!isExaminationExpanded)}
+              className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 transition-colors"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-indigo-100 rounded-lg">
+                  <Stethoscope className="h-5 w-5 text-indigo-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">Examination Details</h2>
+              </div>
+              {isExaminationExpanded ? (
+                <ChevronUp className="h-5 w-5 text-gray-600" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-gray-600" />
+              )}
+            </button>
+            {isExaminationExpanded && (
+              <div className="p-6">
+                <ExaminationDetails
+                  formData={formData}
+                  handleChange={handleChange}
+                  handlePapTest2Change={handlePapTest2Change}
+                  handleSubmit={handleSubmit}
+                />
+              </div>
+            )}
+          </div>
         </form>
       </div>
 

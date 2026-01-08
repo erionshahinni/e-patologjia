@@ -64,6 +64,7 @@ const patientRoutes = require('./routes/patientRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const templateRoutes = require('./routes/templateRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 
 // API Routes
@@ -72,6 +73,7 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Health Check Endpoint
 app.get('/health', (req, res) => {

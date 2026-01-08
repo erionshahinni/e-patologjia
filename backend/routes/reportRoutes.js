@@ -27,19 +27,22 @@ router.get('/', auth, safeHandler(reportController.getReports));
 // Get reports for a specific patient
 router.get('/patient/:patientId', auth, safeHandler(reportController.getReportsByPatientId));
 
-// Get a specific report
-router.get('/:id', auth, safeHandler(reportController.getReportById));
-
 // Create a new report
 router.post('/', auth, safeHandler(reportController.createReport));
+
+// Send report via email with PDF attachment (must be before /:id routes)
+router.post('/:id/send-email', auth, safeHandler(reportController.sendReportEmail));
+
+// Open Outlook with email and PDF attachment (must be before /:id routes)
+router.post('/:id/open-outlook', auth, safeHandler(reportController.openOutlookWithAttachment));
+
+// Get a specific report
+router.get('/:id', auth, safeHandler(reportController.getReportById));
 
 // Update a report
 router.put('/:id', auth, safeHandler(reportController.updateReport));
 
 // Delete a report
 router.delete('/:id', auth, safeHandler(reportController.deleteReport));
-
-// Send report via email with PDF attachment
-router.post('/:id/send-email', auth, safeHandler(reportController.sendReportEmail));
 
 module.exports = router;

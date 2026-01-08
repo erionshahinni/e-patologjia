@@ -14,7 +14,8 @@ import {
   Shield,
   Bell,
   LogOut,
-  BarChart3
+  BarChart3,
+  Globe
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -33,7 +34,7 @@ const Navbar = () => {
   };
 
   const navigation = [
-    { name: 'Dashboard', path: '/', icon: Users },
+    { name: 'Dashboard', path: '/dashboard', icon: Users },
     { name: 'Institucionet shendetesore', path: '/healthcare-institutions', icon: Building2 },
     { name: 'Mjeku udhezues', path: '/referring-doctors', icon: UserCircle },
     { name: 'Shabllonet', path: '/templates', icon: FileStack },
@@ -50,15 +51,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            {/* Logo */}
-            <Link to="/" className="flex items-center">
-              <div className="w-8 h-8 rounded bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                <Layout className="w-5 h-5 text-white" />
-              </div>
-              <span className="ml-2 text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-                ePatologjia
-              </span>
-            </Link>
+            {/* Logo - Removed */}
 
             {/* Desktop Navigation */}
             <div className="hidden md:ml-10 md:flex md:space-x-2">
@@ -81,36 +74,42 @@ const Navbar = () => {
 
           {/* Right Side - Profile Section */}
           <div className="flex items-center gap-4">
-            {/* Notifications */}
-            <button className="p-2 text-gray-400 hover:text-gray-500 relative">
-              <Bell className="h-6 w-6" />
-              <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
-            </button>
+            {/* Website Link */}
+            <Link
+              to="/home"
+              className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              title="Shko tek Website"
+            >
+              <Globe className="w-5 h-5 mr-2" />
+              <span>Website</span>
+            </Link>
 
             {/* Profile Section */}
-            <div className="relative">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center space-x-3">
-                  <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                    <UserCircle className="h-6 w-6 text-blue-600" />
+            <div className="flex items-center gap-4">
+              <Link
+                to="/profile"
+                className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+              >
+                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <UserCircle className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="hidden md:block text-left">
+                  <div className="text-sm font-medium text-gray-700">
+                    {user?.username || 'User'}
                   </div>
-                  <div className="hidden md:block text-left">
-                    <div className="text-sm font-medium text-gray-700">
-                      {user?.username || 'User'}
-                    </div>
-                    <div className="text-xs text-gray-500 capitalize">
-                      {user?.role || 'Guest'}
-                    </div>
+                  <div className="text-xs text-gray-500 capitalize">
+                    {user?.role || 'Guest'}
                   </div>
                 </div>
-                
-                <button
-                  onClick={handleLogout}
-                  className="p-2 text-gray-400 hover:text-gray-500"
-                >
-                  <LogOut className="h-6 w-6" />
-                </button>
-              </div>
+              </Link>
+              
+              <button
+                onClick={handleLogout}
+                className="p-2 text-gray-400 hover:text-gray-500"
+                title="Dil"
+              >
+                <LogOut className="h-6 w-6" />
+              </button>
             </div>
 
             {/* Mobile menu button */}
@@ -148,6 +147,14 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
+          <Link
+            to="/home"
+            className="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <Globe className="w-5 h-5 mr-3" />
+            Website
+          </Link>
         </div>
       </div>
     </nav>

@@ -18,7 +18,7 @@ const patientSchema = new mongoose.Schema({
   gender: { 
     type: String, 
     required: false,
-    enum: ['male', 'female', 'other'] // Validates that gender matches one of these values when provided
+    enum: ['male', 'female', 'other', null, ''] // Allow null and empty string
   },
   address: { 
     type: String, 

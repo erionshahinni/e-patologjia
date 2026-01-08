@@ -42,11 +42,13 @@ const PatientInfoCard = ({ patient }) => {
             label="Patient Name"
             value={`${patient.firstName} ${patient.lastName}`}
           />
-          <InfoItem 
-            icon={Calendar}
-            label="Date of Birth"
-            value={new Date(patient.dateOfBirth).toLocaleDateString()}
-          />
+          {patient.dateOfBirth && (
+            <InfoItem 
+              icon={Calendar}
+              label="Date of Birth"
+              value={new Date(patient.dateOfBirth).toLocaleDateString()}
+            />
+          )}
           <InfoItem 
             icon={Building2}
             label="Gjinia"

@@ -10,9 +10,16 @@ const testEmailService = async () => {
   return await baseService.testEmailService();
 };
 
+// General email sending function
+const sendEmail = async (to, subject, htmlTemplate, textTemplate) => {
+  const baseService = new BaseEmailService();
+  return await baseService.sendEmail(to, subject, htmlTemplate, textTemplate);
+};
+
 module.exports = {
   verificationEmailService,
   passwordResetEmailService,
   pinResetEmailService,
-  testEmailService
+  testEmailService,
+  sendEmail
 };

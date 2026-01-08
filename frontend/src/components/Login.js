@@ -19,7 +19,7 @@ const Login = () => {
   // Only redirect if user is logged in and we're on the login page
   useEffect(() => {
     if (user && user.isVerified && location.pathname === '/login') {
-      const redirect = location.state?.from || '/';
+      const redirect = location.state?.from || '/dashboard';
       navigate(redirect, { replace: true });
     } else if (user && !user.isVerified && location.pathname === '/login') {
       // If user is logged in but not verified, redirect to verification page
