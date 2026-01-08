@@ -35,8 +35,23 @@ const corsOptions = {
 const securityMiddleware = require('./middleware/security');
 const errorHandler = require('./middleware/errorHandler');
 
-// Security Middleware
-app.use(helmet());
+// Trust proxy (important for SSL termination with Nginx/Apache)
+app.set('trust proxy', 1);
+
+// Security Middleware - Modified for production
+app.use(helmet({
+  contentSecurityPolicy: NODE_ENV === 'production' ? {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+    },
+  } : false,
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
 app.use(cors(corsOptions));
 app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 
@@ -44,6 +59,7 @@ app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 securityMiddleware(app);
 
 // Body Parser Middleware
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -81,7 +97,17 @@ app.get('/health', (req, res) => {
     status: 'ok',
     timestamp: new Date(),
     environment: NODE_ENV,
-    mongoConnection: mongoose.connection.readyState === 1
+    mongoConnection: mongoose.connection.readyState === 1,
+    corsEnabled: true
+  });
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Lab System API',
+    version: '1.0.0',
+    status: 'running'
   });
 });
 
@@ -96,6 +122,7 @@ const startServer = async () => {
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`Server running in ${NODE_ENV} mode on port ${PORT}`);
       console.log(`JWT_SECRET is ${process.env.JWT_SECRET ? 'configured' : 'missing'}`);
+      console.log(`CORS enabled for: ${NODE_ENV === 'production' ? 'https://patologjia.com' : 'http://localhost:3000'}`);
     });
 
   } catch (error) {
